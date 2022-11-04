@@ -8,7 +8,8 @@ sche=["2019-7-30", "6:00", "面談"]
 
 def sqlproc(func): ##SQL処理
     def wrapper(*args, **kwargs):
-        conn = psycopg2.connect("host=ec2-100-24-202-223.compute-1.amazonaws.com port=5432 dbname=d97ru1tlpgtsi6 user=cbmjdihrufkscv password=bb46d9089d1d6e965608f91eca5054aaf72fef0d1e84b012aa0d980caef856b3")
+        dsn = "dbname=linebot_xjgh port=5432 host=dpg-cdcj0s82i3msb94cqrcg-a.oregon-postgres.render.com user=satoshi password=ZqnpwBDLryspgqj4piqddWBdoqh92BWW"
+        conn = psycopg2.connect(dsn)
         cur = conn.cursor()
         #print('--start--')
         ans=func(cur,*args, **kwargs)
