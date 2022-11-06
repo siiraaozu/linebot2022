@@ -19,9 +19,9 @@ app = Flask(__name__)
 #LINE Access Token
 #os.environ["環境変数名"]
 #YOUR_CHANNEL_ACCESS_TOKEN = os.environ["YOUR_CHANNEL_ACCESS_TOKEN"]
-YOUR_CHANNEL_ACCESS_TOKEN = "QUsNkMGvGU59j024uIXBAEiquRPEVjh4Niua4OM1PGLBECtPRnOGtUIUtIWL0aef2xO/CdZnvZqjx+2KS+CaHBHhiY1tmvYJmgzbUN8yGnRt7yg82kIdcD/mtcrO0HKTbFHR6D/t7ScEwrUOhQ88VwdB04t89/1O/w1cDnyilFU="
-#LINE Channel Secret
-#YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
+YOUR_CHANNEL_ACCESS_TOKEN = "RZNtaBkl4+E9IrrKQM1jDkC0ge5LQ/q6llRIC4IjbSfFncZcnw9ZajmsPomDJkm6VwTzsUQCbIDyujcm5d9qKBCxDKpNk3MVSlS8sWxWPULsxTzqSfUnzpfIInnxx/CLPqeDOAkmhwL1bhnrihqCwQdB04t89/1O/w1cDnyilFU="
+
+
 #LINE User ID
 #YOUR_USER_ID = os.environ["YOUR_USER_ID"]
 YOUR_USER_ID="Uf7ae85768045d752c0cded101ea24c34"
@@ -52,7 +52,13 @@ def main():
         TextSendMessage(text=mes))
     else:
         pass
-        #mes="おはようございます🌞\n今日の予定はありません。"
+
+        """
+        mes="おはようございます🌞\n今日の予定はありません。"
+        line_bot_api.push_message(
+        YOUR_USER_ID,
+        TextSendMessage(text=mes))
+        """
 
     
 
