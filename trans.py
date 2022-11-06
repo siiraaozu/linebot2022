@@ -228,7 +228,7 @@ def trans(_input):
 
 #デバッグ用
 if __name__=='__main__':
-    inpu="2021/1/21 16:15 課題"
+    inpu="17 7 紙布出す"
     print(trans(inpu))
 #print(output)
 #print(trans(input))

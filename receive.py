@@ -91,55 +91,40 @@ def handle_message(event):
             else:
                 mes="一ヶ月以内の予定はありません。"
 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=mes))
-
         elif mesType == 2: #予定登録
             print("type1:{}".format(type(schedule[0])))
-
             #予定登録SQL実行
             sql.add(schedule) 
             mes = str(schedule[0].month) + "月" + str(schedule[0].day) +"日の"
             mes += str(schedule[0].hour) + ":" + zero(str(schedule[0].minute)) + "に"
             mes +=  schedule[1] + "ですね！\n予定を登録しました！\n予定を表示するには「予定」と入力してください♪"
-            line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=mes))
+
         elif mesType == 3: #予定削除(実行)
             #「削除　日付」→削除確認→はい→削除 いいえ→何もしない
+            mes = ""
             if schedule == "":
                 sql.delete0(0)
-                mes = "予定を削除しました！"
-                line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=mes))
             else:
                 sql.delete(schedule)
                 mes = str(schedule.month) + "月" + str(schedule.day) +"日の"
-                mes += "予定を削除しました！"
-                line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=mes))
+            mes += "予定を削除しました！"
+
         elif mesType == 4: #予定削除(確認)
             if schedule == "":
                 mes = "予定を【すべて】削除しますか？\n削除する場合は「はい」\n 削除しない場合は「いいえ」を入力するか、別のコマンドを入力してください。"
             else:
                 mes = "予定を削除しますか？\n削除する場合は「はい」\n 削除しない場合は「いいえ」を入力するか、別のコマンドを入力してください。"
-            line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=mes))
 
         elif mesType == 9:
             mes = "コマンドが間違っているみたいです…\nもう一度入力してください。"
-            line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=mes))
+
         elif mesType == 10:
             mes = "処理を取り消しました。"
-            line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=mes))
+
+        line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=mes))
+
     except psycopg2.OperationalError:
         mes = "エラー\nherokuの資格情報を確認してください。"
         line_bot_api.reply_message(
