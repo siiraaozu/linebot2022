@@ -14,6 +14,8 @@ import trans #独自関数
 import integratedSQL as sql #独自関数
 import datetime
 
+from common import zero
+
 import psycopg2
 
 app = Flask(__name__)
@@ -32,11 +34,7 @@ today = now.date()
 
 
 
-def zero(str_):
-    if str_ == "0":
-        return "00"
-    else:
-        return str_
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
