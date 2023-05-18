@@ -4,4 +4,4 @@ import gomi
 
 time_schedule.time_schedule()
 time_todo.main()
-gomi.main()
+##gomi.main()
