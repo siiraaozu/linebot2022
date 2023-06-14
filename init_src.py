@@ -49,3 +49,9 @@ def get_tomorrow():
     nowplus24 = now +  datetime.timedelta(hours=24)#今日→明日
     tomorrow = nowplus24.date()
     return tomorrow
+
+def zero(str_):
+    if str_ == "0":
+        return "00"
+    else:
+        return str_

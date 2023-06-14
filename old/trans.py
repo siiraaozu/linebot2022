@@ -1,5 +1,5 @@
 #LINEの入力からDB対応の文字列に変換
-#trans 引数:[種類,スケジュール配列]
+#trans 引数:[種類(int),スケジュール配列[日時(datetime),内容(str)]]
 #種類
 #0:なし
 #1:予定表示
@@ -12,7 +12,7 @@
 マッチ条件
 1.予定登録
 構文:[day schedule],[day time schedule]
-day:{yyyy-mm-dd(ex.2021-1-12),yyyy/mm/dd,mm-dd(ex.7-3,12-03), mm/dd, dd(ex. 4),[曜日](ex.水,今週水,来週金)}
+day:{yyyy-mm-dd(ex.2021-1-12),yyyy/mm/dd,mm-dd(ex.7-3,12-03), mm/dd, dd(ex. 4),[曜日](ex.水,今週水,来週金),今日,明日,明後日}
 
 3.予定削除
 構文:[削除],[削除 day]
@@ -33,7 +33,7 @@ import integratedSQL as sql #独自関数
 #input="予定"
 def transDate(date0):
     monthDatekey=r"[/-]"
-    DWkey = r"[月火水木金]"
+    DWkey = r"[月火水木金土日]"
     DWs = ["月","火","水","木","金","土","日"]
     weekkey = r"[今来]+[週]" #今週or 来週
 
@@ -228,7 +228,7 @@ def trans(_input):
 
 #デバッグ用
 if __name__=='__main__':
-    inpu="17 7 紙布出す"
+    inpu="5/10 19 クリーニング"
     print(trans(inpu))
 #print(output)
 #print(trans(input))

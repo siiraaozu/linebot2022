@@ -1,23 +1,30 @@
+"""
 from flask import Flask, request, abort
 
 from linebot import (
     LineBotApi, WebhookHandler
 )
+
+import os
+
+"""
+from flask import request, abort
 from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
-import os
-import trans #独自関数
+
+import new_trans #独自関数
 import integratedSQL as sql #独自関数
 import datetime
 
-from common import zero
+
+from init_src import *
 
 import psycopg2
-
+"""
 app = Flask(__name__)
 
 #LINE Access Token
@@ -31,8 +38,10 @@ handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
 now = datetime.datetime.today() + datetime.timedelta(hours=9) #時差
 today = now.date()
+"""
 
-
+app, line_bot_api, handler = init_flask(LINE_RECEIVE)
+now, today= get_nowToday()
 
 
 
@@ -65,7 +74,7 @@ def handle_message(event):
 
         #送信テキストの保存
         sql.save_send(userMes)
-        [mesType,schedule] = trans.trans(userMes) #trans関数で変換
+        [mesType,schedule] = new_trans.new_trans(userMes) 
         print("type:{}".format(mesType))
         if mesType == 1: #予定表示
             schedules = sql.disp(0)

@@ -5,7 +5,6 @@ from linebot.models import (
 )
 
 from init_src import *
-from common import zero
 
 import integratedSQL as sql #独自関数
 
@@ -46,7 +45,7 @@ def main():
     line_send(mes)
 
 #うえとおなじ
-def time_schedule():
+def timeSend_schedule():
     now, today= get_nowToday()
     print("today:{}".format(today))
 
@@ -56,7 +55,7 @@ def time_schedule():
     
     line_send(mes)
 
-def time_scheduleNight():
+def timeSend_scheduleNight():
     tomorrow = get_tomorrow()
     print("tomorrow:{}".format(tomorrow))
 
@@ -68,4 +67,4 @@ def time_scheduleNight():
 
 #デバッグ陽
 if __name__ == "__main__":
-   time_scheduleNight()
+   timeSend_scheduleNight()
