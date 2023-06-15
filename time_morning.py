@@ -4,5 +4,8 @@ import send_todo
 
 def main():
     send_schedule.timeSend_schedule()
-    send_todo.timeSend_todo
+    send_todo.timeSend_todo()
 ##gomi.main()
+
+if __name__ == "__main__":
+    main()
