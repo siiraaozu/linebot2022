@@ -112,8 +112,8 @@ def handle_message(event):
             if schedule == "":
                 sql.delete0(0)
             else:
-                sql.delete(schedule)
-                mes = str(schedule.month) + "月" + str(schedule.day) +"日の"
+                sql.delete(schedule[1])
+                mes = str(schedule[1].month) + "月" + str(schedule[1].day) +"日の"
             mes += "予定を削除しました！"
 
         elif mesType == 4: #予定削除(確認)
