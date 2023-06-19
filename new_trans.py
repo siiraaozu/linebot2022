@@ -32,6 +32,24 @@ CONFIRM_DELETE = 4
 ERROR = 9
 INTERRUPT = 10
 
+class Command:
+    def __init__(self, mesType, content_schedule):
+        if mesType == REGIST_SCHEDULE:
+            self.mesType = mesType
+            self.schedule = content_schedule
+            self.content = ""
+            self.date_del = ""
+        elif mesType == CONFIRM_DELETE:
+            self.mesType = mesType
+            self.date_del = content_schedule
+            self.schedule = ""
+            self.content = ""
+
+
+class Schedule:
+    def __init__(self, datatime, event):
+        self.mesType 
+
 #　グローバル変数(ファイル内)
 [now, today] = get_nowToday()
 
