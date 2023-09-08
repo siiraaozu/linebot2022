@@ -85,7 +85,6 @@ def handle_message(event):
                 for _sche in schedules:
                     #デフォルトは、今日以降の予定を表示
                     con_all = (schedule == "all")
-
                     con_nf = _sche[0] >= today #今日以降 nf:now and future
                     con_u1m = _sche[0] <= today + datetime.timedelta(days=31)#今日から一ヶ月以内
                     if con_all or (not con_all and con_nf and con_u1m): #allとデフォルトを両方表現
@@ -94,7 +93,8 @@ def handle_message(event):
                         mes += (mesDate + "　")
                         mesTime = str(_sche[1].hour) + ":" + zero(str(_sche[1].minute))
                         mes += (mesTime + "　" + _sche[2]+"\n")
-                if mes:
+            
+            if mes:
                     mes = mes[:-1]#最後の改行をとる
             else:
                 mes="一ヶ月以内の予定はありません。"
