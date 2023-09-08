@@ -74,7 +74,7 @@ def handle_message(event):
 
         #送信テキストの保存
         sql.save_send(userMes)
-        [mesType,schedule] = new_trans.new_trans(userMes) 
+        [mesType,schedule] = new_trans.trans(userMes) 
         print("type:{}".format(mesType))
         if mesType == 1: #予定表示
             schedules = sql.disp(0)
@@ -112,7 +112,7 @@ def handle_message(event):
             #send logの2番目に古いデータを見る
 
             prev_userMes = sql.ref_log(0)
-            [prev_mesType, prev_schedule] = new_trans.new_trans(prev_userMes) 
+            [prev_mesType, prev_schedule] = new_trans.trans(prev_userMes) 
             if prev_mesType == 4:
                 mes = ""
                 if prev_schedule == "":

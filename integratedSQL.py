@@ -69,6 +69,23 @@ def update():
     pass
 
 
+"""デバック用"""
+@sqlproc
+def disp_tableName(_cur,_num):
+    _cur.execute("select schemaname, tablename, tableowner from pg_tables where tableowner = 'satoshi';")
+    rows = _cur.fetchall()
+    return rows
+
+@sqlproc
+def disp_tableContent(_cur, table_name, order):
+    _cur.execute("select * from " + table_name + " order by " + order + ";")
+    rows = _cur.fetchall()
+    return rows
+
+
+@sqlproc
+def delete_log(_cur,_num): #date:'2019-07-30'
+    _cur.execute("DELETE FROM send_log;")
 
 
 
@@ -77,4 +94,9 @@ if __name__=="__main__":
     #schedules=select(["date",today])
     #d=["date", today]
     #print(schedules)
-    print(ref_log(0))
+    #print(ref_log(0))
+    print(delete0(0))
+    #print(disp_tableContent("schedule", "date, time"))
+    #delete_log(0)
+    #print(disp_tableContent("send_log", "datetime"))
+    #save_send("www")

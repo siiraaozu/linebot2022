@@ -32,6 +32,7 @@ CONFIRM_DELETE = 4
 ERROR = 9
 INTERRUPT = 10
 
+
 class Command:
     def __init__(self, mesType, content_schedule):
         if mesType == REGIST_SCHEDULE:
@@ -55,7 +56,8 @@ class Schedule:
 
 # ローカル関数
 
-def trans_kanji2day(date_str):
+#---trans_date群(transd_xx)---
+def transd_kanji2day(date_str):
     key_DayofWeek = r"[月火水木金土日]"
     list_DayofWeek = ["月","火","水","木","金","土","日"]
 
@@ -93,7 +95,7 @@ def trans_kanji2day(date_str):
 
 
 #区切り4つ→4つ目以降は捨てる
-def split_date(date_str):
+def transd_splitDate(date_str):
     str_split = r"[/-]"
     splited_date_strs = re.split(str_split,date_str)
 
@@ -119,25 +121,24 @@ def split_date(date_str):
     return year_str, month_str, day_str
 
 
-#year_str = ""
-def comp_year():
+def transd_compYear():
     year_str  = str(today.year)
     return year_str
 
-def comp_month():
+def transd_compMonth():
     month_str  = str(today.month)
     return month_str
 
 def trans_date(date_str):
-    new_date_str = trans_kanji2day(date_str)
+    new_date_str = transd_kanji2day(date_str)
     
-    year_str, month_str, day_str = split_date(new_date_str)
+    year_str, month_str, day_str = transd_splitDate(new_date_str)
 
     if year_str == "":
-        year_str = comp_year()
+        year_str = transd_compYear()
 
     if month_str == "":
-        month_str = comp_month()
+        month_str = transd_compMonth()
     
     return year_str, month_str, day_str
 
@@ -199,7 +200,7 @@ def split_schedule(schedule_str):
     new_schedule_strs = re.split(" |　",schedule_str)
     return new_schedule_strs
 
-def trans_regist(schedule_str):
+def transf_registSchedule(schedule_str):
     #split
     new_schedule_strs = split_schedule(schedule_str)
 
@@ -231,7 +232,7 @@ def trans_regist(schedule_str):
 
 
 #形式チェックはしない
-def confirm_delete(schedule_str):
+def transf_delete(schedule_str):
     new_schedule_strs = split_schedule(schedule_str)
     if len(new_schedule_strs) == 1:
         new_schedule = ""
@@ -248,11 +249,76 @@ def confirm_delete(schedule_str):
     #つづき
     return mesType, new_schedule
 
-#グローバル変数
-def new_trans(schedule_str):
+def transf_dispSchedule(schedule_str):
+    new_schedule_strs = split_schedule(schedule_str)
+    if len(new_schedule_strs) == 1:
+        mesType = DISP_SCHEDULE
+        new_schedule = ""
+    elif len(new_schedule_strs) == 2 \
+        and (new_schedule_strs[1] == "全て" \
+        or new_schedule_strs[1] == "すべて"):
+        mesType = DISP_SCHEDULE
+        new_schedule = "all"
+    else:
+        mesType = ERROR
+        new_schedule =""  
+
+    return mesType, new_schedule
+ 
+def transf_execute(schedule_str):
+    mesType = EXEC_DELETE
+    new_schedule = ""
+    return mesType, new_schedule
+
+def transf_interrupt(schedule_str):
+    mesType = INTERRUPT
+    new_schedule = ""
+    return mesType, new_schedule
+
+def trans_func(mestype_tmp, schedule_str):
+    func_dict = {
+    "disp_schedule" : transf_dispSchedule,
+    "regist_schedule_etc" : transf_registSchedule,
+    "execute" : transf_execute,
+    "delete" : transf_delete,
+    "inrerrupt" : transf_interrupt
+    }
+
+    return func_dict[mestype_tmp](schedule_str)
+
+
+
+#lookup
+def classify_mesType(schedule_str):
     #new_schedule_strs = split_schedule(schedule_str)
     if schedule_str[:2] == "削除": #今の所すべて削除
-        mesType, new_schedule= confirm_delete(schedule_str)
+        mestype_tmp = "delete"
+    elif schedule_str[:2] == "はい": 
+        mestype_tmp = "execute"
+    elif schedule_str[:3] == "いいえ": 
+        mestype_tmp = "inrerrupt"
+    elif schedule_str[:2] == "予定":
+        mestype_tmp = "disp_schedule"
+    else:
+        mestype_tmp = "regist_schedule_etc"
+    return mestype_tmp
+
+
+
+#main
+def trans(schedule_str):
+    mestype_tmp = classify_mesType(schedule_str)
+    mesType, new_schedule = trans_func(mestype_tmp, schedule_str)
+
+    output = [mesType, new_schedule]
+    print("ind.{}".format(mesType))
+
+    return output
+
+
+def new_trans(schedule_str):
+    if schedule_str[:2] == "削除": #今の所すべて削除
+        mesType, new_schedule= transf_delete(schedule_str)
         
     elif schedule_str[:2] == "はい": 
         mesType = EXEC_DELETE
@@ -276,18 +342,19 @@ def new_trans(schedule_str):
             mesType = ERROR
             new_schedule =""  
     else:
-        mesType, new_schedule = trans_regist(schedule_str)
-        
-    output = [mesType, new_schedule]
-    print("ind.{}".format(mesType))
+        mesType, new_schedule = transf_registSchedule(schedule_str)
 
-    return output
+        output = [mesType, new_schedule]
+        print("ind.{}".format(mesType))
+
+        return output
+
 
 
 #デバッグ用
 if __name__=='__main__':
-    date_str="明日　テスト"
-    print(new_trans(date_str))
+    date_str="あ"
+    print(trans(date_str))
 
 
 
