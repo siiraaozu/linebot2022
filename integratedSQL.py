@@ -94,8 +94,8 @@ if __name__=="__main__":
     #schedules=select(["date",today])
     #d=["date", today]
     #print(schedules)
-    #print(ref_log(0))
-    print(delete0(0))
+    print(ref_log(0)[1])
+    #print(delete0(0))
     #print(disp_tableContent("schedule", "date, time"))
     #delete_log(0)
     #print(disp_tableContent("send_log", "datetime"))

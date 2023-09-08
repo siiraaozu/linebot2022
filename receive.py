@@ -94,10 +94,12 @@ def handle_message(event):
                         mesTime = str(_sche[1].hour) + ":" + zero(str(_sche[1].minute))
                         mes += (mesTime + "　" + _sche[2]+"\n")
             
-            if mes:
-                    mes = mes[:-1]#最後の改行をとる
+                if mes:
+                        mes = mes[:-1]#最後の改行をとる
+                else:
+                    mes="一ヶ月以内の予定はありません。"
             else:
-                mes="一ヶ月以内の予定はありません。"
+                mes="予定はありません。"
 
         elif mesType == 2: #予定登録
             print("type1:{}".format(type(schedule[0])))
@@ -111,15 +113,15 @@ def handle_message(event):
             #「削除　日付」→削除確認→はい→削除 いいえ→何もしない
             #send logの2番目に古いデータを見る
 
-            prev_userMes = sql.ref_log(0)
+            prev_userMes = sql.ref_log(0)[1]
             [prev_mesType, prev_schedule] = new_trans.trans(prev_userMes) 
             if prev_mesType == 4:
                 mes = ""
-                if prev_schedule == "":
-                    sql.delete0(0)
+                if type(prev_schedule[0]) is datetime.date:
+                    sql.delete(prev_schedule[0].strftime('%Y-%m-%d'))
+                    mes = str(prev_schedule[0].month) + "月" + str(prev_schedule[0].day) +"日の"
                 else:
-                    sql.delete(schedule[1])
-                    mes = str(schedule[1].month) + "月" + str(schedule[1].day) +"日の"
+                    sql.delete0(0)
                 mes += "予定を削除しました！"
             else:
                 mes = "無効なコマンドです…。"

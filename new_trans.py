@@ -63,30 +63,24 @@ def transd_kanji2day(date_str):
 
     if "今日" in date_str:
         new_date_str = today.strftime('%Y/%m/%d') + date_str[2:]
-    
     elif "明日" in date_str:
         tomorrow = today + datetime.timedelta(days=1)
         new_date_str = tomorrow.strftime('%Y/%m/%d') + date_str[2:]
-
     elif "明後日" in date_str:
         DayAfterTomorrow = today + datetime.timedelta(days=2)
         new_date_str = DayAfterTomorrow.strftime('%Y/%m/%d') + date_str[3:]
-
     elif re.search(key_DayofWeek, date_str): #曜日が含まれるか？
         offset_week = 0
         new_date_str = date_str
-        
         if "来週" in date_str: #先頭に来週があるか？？　今週廃止
             offset_week = 7
-            new_date_str = new_date_str[2:]
-        
+            new_date_str = new_date_str[2:] 
         #new_date_str="水　18 予定"
         for i, dow in enumerate(list_DayofWeek):
             if dow == new_date_str[0]:
                 offset = i - today.weekday()
                 date = today + datetime.timedelta(days=offset+offset_week)
                 date_str = date.strftime('%Y/%m/%d')
-        
         new_date_str = date_str + new_date_str[1:]
     else:
         new_date_str = date_str
@@ -102,13 +96,11 @@ def transd_splitDate(date_str):
     if len(splited_date_strs) == 3:
         year_str = splited_date_strs[0]
         month_str = splited_date_strs[1]
-        day_str = splited_date_strs[2]
-        
+        day_str = splited_date_strs[2]    
     elif len(splited_date_strs) == 2:
         year_str = ""
         month_str = splited_date_strs[0]
         day_str = splited_date_strs[1]
-
     elif len(splited_date_strs) == 1:
         year_str = ""
         month_str = ""
@@ -131,12 +123,10 @@ def transd_compMonth():
 
 def trans_date(date_str):
     new_date_str = transd_kanji2day(date_str)
-    
     year_str, month_str, day_str = transd_splitDate(new_date_str)
 
     if year_str == "":
         year_str = transd_compYear()
-
     if month_str == "":
         month_str = transd_compMonth()
     
@@ -301,6 +291,7 @@ def classify_mesType(schedule_str):
         mestype_tmp = "disp_schedule"
     else:
         mestype_tmp = "regist_schedule_etc"
+    
     return mestype_tmp
 
 
@@ -316,44 +307,9 @@ def trans(schedule_str):
     return output
 
 
-def new_trans(schedule_str):
-    if schedule_str[:2] == "削除": #今の所すべて削除
-        mesType, new_schedule= transf_delete(schedule_str)
-        
-    elif schedule_str[:2] == "はい": 
-        mesType = EXEC_DELETE
-        new_schedule = ""
-
-    elif schedule_str[:3] == "いいえ": 
-        mesType = INTERRUPT
-        new_schedule = ""
-
-    elif schedule_str[:2] == "予定":
-        new_schedule_strs = split_schedule(schedule_str)
-        if len(new_schedule_strs) == 1:
-            mesType = DISP_SCHEDULE
-            new_schedule = ""
-        elif len(new_schedule_strs) == 2 \
-            and (new_schedule_strs[1] == "全て" \
-            or new_schedule_strs[1] == "すべて"):
-            mesType = DISP_SCHEDULE
-            new_schedule = "all"
-        else:
-            mesType = ERROR
-            new_schedule =""  
-    else:
-        mesType, new_schedule = transf_registSchedule(schedule_str)
-
-        output = [mesType, new_schedule]
-        print("ind.{}".format(mesType))
-
-        return output
-
-
-
 #デバッグ用
 if __name__=='__main__':
-    date_str="あ"
+    date_str="削除　明日"
     print(trans(date_str))
 
 
