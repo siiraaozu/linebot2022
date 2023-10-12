@@ -86,5 +86,5 @@ def handle_msg2reply(userMes):
         elif mesType == 10:
             reply_mes = "処理を取り消しました。"
     else: 
-        reply_mes = ""
+        reply_mes = "⚠メッセージが重複しています！\n送信のリトライを行った可能性があります。"
     return reply_mes
