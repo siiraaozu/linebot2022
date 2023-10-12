@@ -34,22 +34,16 @@ INTERRUPT = 10
 
 
 class Command:
-    def __init__(self, mesType, content_schedule):
-        if mesType == REGIST_SCHEDULE:
-            self.mesType = mesType
-            self.schedule = content_schedule
-            self.content = ""
-            self.date_del = ""
-        elif mesType == CONFIRM_DELETE:
-            self.mesType = mesType
-            self.date_del = content_schedule
-            self.schedule = ""
-            self.content = ""
+    def __init__(self, mesType, content, schedule):
+        self.mesType = mesType
+        self.content = content
+        self.schedule = schedule
 
 
 class Schedule:
     def __init__(self, datatime, event):
-        self.mesType 
+        self.datatime = datatime
+        self.event = event
 
 #　グローバル変数(ファイル内)
 [now, today] = get_nowToday()
@@ -309,7 +303,7 @@ def trans(schedule_str):
 
 #デバッグ用
 if __name__=='__main__':
-    date_str="削除　明日"
+    date_str="明日　テスト"
     print(trans(date_str))
 
 

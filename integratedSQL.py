@@ -52,11 +52,12 @@ def save_send(_cur, _text):
      _cur.execute("INSERT INTO send_log values(%s, %s);",(datetime.datetime.now(), _text))
 
 #送信履歴確認 最新の履歴
+#最新からなんばんめ？
 @sqlproc
-def ref_log(_cur,_num):
+def ref_log(_cur,_idx):
     _cur.execute("select * from send_log order by datetime;")
     rows = _cur.fetchall()
-    return rows[-2] #はい、いいえの送信後なのでひとつ前
+    return rows[-_idx] #はい、いいえの送信後なのでひとつ前
 
 """
 @sqlproc
@@ -95,7 +96,7 @@ if __name__=="__main__":
     #d=["date", today]
     #print(schedules)
     print(ref_log(0)[1])
-    #print(delete0(0))
+    print(delete("2019-07-30"))
     #print(disp_tableContent("schedule", "date, time"))
     #delete_log(0)
     #print(disp_tableContent("send_log", "datetime"))
