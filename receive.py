@@ -10,7 +10,7 @@ import os
 """
 from flask import request, abort
 from linebot.exceptions import (
-    InvalidSignatureError
+    InvalidSignatureError, LineBotApiError
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
@@ -72,20 +72,26 @@ def handle_message(event):
         print("mes:{}".format(userMes))
 
         reply_mes = handle_msg.handle_msg2reply(userMes)
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_mes))
-
     except psycopg2.OperationalError:
         reply_mes = "エラー\nherokuの資格情報を確認してください。"
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_mes))
     except:
         reply_mes = "エラー\nログを確認してください。"
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_mes))
+    finally:
+        try:
+            line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply_mes))
+        except LineBotApiError:
+            #tugiha invalid token指定したい
+            line_bot_api.push_message(
+            YOUR_USER_ID,
+            TextSendMessage(text=reply_mes))
+        except:
+            reply_mes = "エラー\nログを確認してください。"
+            line_bot_api.push_message(
+            YOUR_USER_ID,
+            TextSendMessage(text=reply_mes))
+
 
 
 
