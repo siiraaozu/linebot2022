@@ -18,7 +18,7 @@ from linebot.models import (
 
 import integratedSQL as sql #独自関数
 import handle_msg
-
+import datetime
 
 from init_src import *
 
@@ -67,10 +67,24 @@ def callback():
 # メッセージが来た時の反応らしい
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    try:
+    event_id = event["webhookEventId"]
+    if handle_msg.check_isDupicateEvent(event_id):
+        print("Dupicate message. (id:{})".format(event_id))
+        return 0
+    else:
         userMes = event.message.text
-        print("mes:{}".format(userMes))
+        timestamp_dt = datetime.datetime.fromtimestamp(int(event.timestamp)/1000)
+        #送信テキストの保存
+        sql.save_send(timestamp_dt, userMes, event_id)
+        print("id:{} mes:{}".format(event_id, userMes))
+    """
+        push_mes1 = "エラー\n受信テキストの確認・処理に失敗しました。"
+        line_bot_api.push_message(
+            YOUR_USER_ID,
+            TextSendMessage(text=push_mes1))
+    """
 
+    try:           
         reply_mes = handle_msg.handle_msg2reply(userMes)
     except psycopg2.OperationalError:
         reply_mes = "エラー\nherokuの資格情報を確認してください。"

@@ -2,6 +2,8 @@
 import psycopg2
 import datetime #for debug
 
+from init_src import *
+
 #linebotから情報が送られる
 sche=["2019-7-30", "6:00", "面談"]
 
@@ -23,7 +25,7 @@ def sqlproc(func): ##SQL処理
 
 @sqlproc
 def add(_cur,_sche): #予定の追加 _sche:要素2のりすと[日時,予定]
-    _cur.execute("INSERT INTO schedule values(%s, %s, %s);",(_sche[0].date(), _sche[0].time(), _sche[1]))
+    _cur.execute("INSERT INTO schedule values(%s, %s, %s);",(_sche[COL_DATETIME].date(), _sche[COL_DATETIME].time(), _sche[COL_MES_TXT]))
 
 @sqlproc
 def delete(_cur,_date): #date:'2019-07-30'
@@ -40,16 +42,16 @@ def disp(_cur,_num): #_numにはてきとうな数字
     return rows
 
 @sqlproc
-def select(_cur, _value): #_value[0]:type,_value[1]:value
-    com = "select * from schedule where "+_value[0]+"=\'"+str(_value[1])+"\';"
+def select(_cur, _table, _column, _value):
+    com = "select * from " + _table +" where "+ _column +"=\'" + str(_value) + "\';"
     _cur.execute(com)
     rows = _cur.fetchall()
     return rows
 
 #送信履歴の登録
 @sqlproc
-def save_send(_cur, _text):
-     _cur.execute("INSERT INTO send_log values(%s, %s);",(datetime.datetime.now(), _text))
+def save_send(_cur, _timestamp, _mestxt, _eventid):
+     _cur.execute("INSERT INTO send_log values(%s, %s, %s);",(_timestamp, _mestxt, _eventid))
 
 #送信履歴確認 最新の履歴
 #最新からなんばんめ？

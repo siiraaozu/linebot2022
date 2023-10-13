@@ -14,7 +14,7 @@ import integratedSQL as sql #独自関数
 #MES_BEGIN="おはようございます🌞\n今日は"
 #MES_END="があります！"
 def makeMes_schedule(date, MES_BEGIN, MES_END):
-    schedules = sql.select(["date",date])
+    schedules = sql.select("schedule", "date", date)
     print("schedule:{}".format(schedules))
 
     if schedules:
