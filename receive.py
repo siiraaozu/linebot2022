@@ -67,7 +67,7 @@ def callback():
 # メッセージが来た時の反応らしい
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    event_id = event["webhookEventId"]
+    event_id = event.webhook_event_id
     if handle_msg.check_isDupicateEvent(event_id):
         print("Dupicate message. (id:{})".format(event_id))
         return 0
