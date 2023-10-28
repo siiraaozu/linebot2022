@@ -1,6 +1,6 @@
 
-import new_covert #独自関数
-from new_covert import Schedule, Command
+import new_convert #独自関数
+from new_convert import Schedule, Command
 import integratedSQL as sql #独自関数
 import datetime
 
@@ -65,8 +65,8 @@ def handle_registSchedule(new_cmd):
 
 def handle_execute(new_cmd):
     prev_userMes = sql.ref_log(2)[COL_SENDLOG_MES_TXT]
-    #[prev_mesType, prev_schedule] = new_covert.covert(prev_userMes) 
-    prev_newcmd = new_covert.covert(prev_userMes) 
+    #[prev_mesType, prev_schedule] = new_convert.convert(prev_userMes) 
+    prev_newcmd = new_convert.convert(prev_userMes) 
     prev_schedule = prev_newcmd.content
     if prev_newcmd.mesType == "confirm_delete":
         reply_mes = ""
@@ -97,7 +97,7 @@ def handle_abort(new_cmd):
 
 
 def handle_msg2reply(userMes):
-    new_cmd = new_covert.covert(userMes) 
+    new_cmd = new_convert.convert(userMes) 
     print("type:{}".format(new_cmd.mesType))
 
     func_dict = {

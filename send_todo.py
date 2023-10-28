@@ -12,7 +12,7 @@ from linebot.models import (
 
 
 import requests
-import covert_todo
+import convert_todo
 import send_schedule
 
 from init_src import *
@@ -27,7 +27,7 @@ def makeMes_todo():
 
     #メッセージ作成
     for todo in txt:
-        todo_n = covert_todo.covert_todo(todo)
+        todo_n = convert_todo.convert_todo(todo)
         print(todo_n)
         #優先度(A)かつ(期日5日以内　or 期日無し)
         if todo_n["priority"] == "A":

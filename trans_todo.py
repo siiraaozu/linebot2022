@@ -4,7 +4,7 @@ import datetime
 
 
 #改行は除く
-def covert_todo(todo):
+def convert_todo(todo):
     todo=todo.split()
     priority = r"\([A-Z]\)"
     ymd = r"^(\d{4})-(\d{2})-(\d{2})$"

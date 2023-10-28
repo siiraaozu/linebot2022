@@ -3,7 +3,7 @@ import psycopg2
 import datetime #for debug
 
 from init_src import *
-#from new_covert import Schedule, Command
+#from new_convert import Schedule, Command
 
 #linebotから情報が送られる
 sche=["2019-7-30", "6:00", "面談"]
