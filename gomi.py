@@ -12,7 +12,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 import os
-#import trans #独自関数
+#import covert #独自関数
 #import integratedSQL as sql #独自関数
 import datetime
 

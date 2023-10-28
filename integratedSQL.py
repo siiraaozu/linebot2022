@@ -3,6 +3,7 @@ import psycopg2
 import datetime #for debug
 
 from init_src import *
+#from new_covert import Schedule, Command
 
 #linebotから情報が送られる
 sche=["2019-7-30", "6:00", "面談"]
@@ -25,7 +26,7 @@ def sqlproc(func): ##SQL処理
 
 @sqlproc
 def add(_cur,_sche): #予定の追加 _sche:要素2のりすと[日時,予定]
-    _cur.execute("INSERT INTO schedule values(%s, %s, %s);",(_sche[COL_DATETIME].date(), _sche[COL_DATETIME].time(), _sche[COL_MES_TXT]))
+    _cur.execute("INSERT INTO schedule values(%s, %s, %s);",(_sche.datetime.date(), _sche.datetime.time(), _sche.event))
 
 @sqlproc
 def delete(_cur,_date): #date:'2019-07-30'
@@ -97,9 +98,9 @@ if __name__=="__main__":
     #schedules=select(["date",today])
     #d=["date", today]
     #print(schedules)
-    print(ref_log(0)[1])
-    print(delete("2019-07-30"))
+    #print(ref_log(0)[1])
+    #print(delete("2019-07-30"))
     #print(disp_tableContent("schedule", "date, time"))
     #delete_log(0)
-    #print(disp_tableContent("send_log", "datetime"))
+    print(disp_tableContent("send_log", "datetime"))
     #save_send("www")

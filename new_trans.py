@@ -1,5 +1,5 @@
 #LINEの入力からDB対応の文字列に変換
-#trans 引数:[種類(int),スケジュール配列[日時(datetime),内容(str)]]
+#covert 引数:[種類(int),スケジュール配列[日時(datetime),内容(str)]]
 #outputSche:配列または文字列
 '''
 マッチ条件
@@ -23,7 +23,7 @@ import integratedSQL as sql #独自関数
 
 from init_src import get_nowToday
 
-#transDate:transに使う
+#covertDate:covertに使う
 #input="予定"
 DISP_SCHEDULE = 1
 REGIST_SCHEDULE = 2
@@ -32,26 +32,35 @@ CONFIRM_DELETE = 4
 ERROR = 9
 INTERRUPT = 10
 
+"display_schedule"
+"regist_schedule"
+"execute_delete"
+"confirm_delete"
+"error"
+"abort"
 
-class Command:
-    def __init__(self, mesType, content, schedule):
-        self.mesType = mesType
-        self.content = content
-        self.schedule = schedule
+
 
 
 class Schedule:
-    def __init__(self, datatime, event):
-        self.datatime = datatime
+    def __init__(self, datetime: datetime, event: str):
+        self.datetime = datetime
         self.event = event
+
+class Command:
+    def __init__(self, mesType: str, content):
+        self.mesType = mesType
+        self.content = content
+    #一時メモ、コンテントにはスケジュール」objガイはいる可能性
+
 
 #　グローバル変数(ファイル内)
 [now, today] = get_nowToday()
 
 # ローカル関数
 
-#---trans_date群(transd_xx)---
-def transd_kanji2day(date_str):
+#---covert_date群(covertd_xx)---
+def covertd_kanji2day(date_str):
     key_DayofWeek = r"[月火水木金土日]"
     list_DayofWeek = ["月","火","水","木","金","土","日"]
 
@@ -83,7 +92,7 @@ def transd_kanji2day(date_str):
 
 
 #区切り4つ→4つ目以降は捨てる
-def transd_splitDate(date_str):
+def covertd_splitDate(date_str):
     str_split = r"[/-]"
     splited_date_strs = re.split(str_split,date_str)
 
@@ -107,29 +116,29 @@ def transd_splitDate(date_str):
     return year_str, month_str, day_str
 
 
-def transd_compYear():
+def covertd_compYear():
     year_str  = str(today.year)
     return year_str
 
-def transd_compMonth():
+def covertd_compMonth():
     month_str  = str(today.month)
     return month_str
 
-def trans_date(date_str):
-    new_date_str = transd_kanji2day(date_str)
-    year_str, month_str, day_str = transd_splitDate(new_date_str)
+def covert_date(date_str):
+    new_date_str = covertd_kanji2day(date_str)
+    year_str, month_str, day_str = covertd_splitDate(new_date_str)
 
     if year_str == "":
-        year_str = transd_compYear()
+        year_str = covertd_compYear()
     if month_str == "":
-        month_str = transd_compMonth()
+        month_str = covertd_compMonth()
     
     return year_str, month_str, day_str
 
 
 
 #時の処理
-def trans_time(time_str):
+def covert_time(time_str):
     if "半" in time_str:
         new_time_str = time_str.replace("時半","30")
     elif "時" in time_str:
@@ -184,7 +193,8 @@ def split_schedule(schedule_str):
     new_schedule_strs = re.split(" |　",schedule_str)
     return new_schedule_strs
 
-def transf_registSchedule(schedule_str):
+## covertfuncのサブ関数
+def covertf_registSchedule(schedule_str):
     #split
     new_schedule_strs = split_schedule(schedule_str)
 
@@ -201,71 +211,62 @@ def transf_registSchedule(schedule_str):
         time = ""
         scheduleCont = ""
 
-    year, month, day = trans_date(date)
-    hour, min = trans_time(time)
+    year, month, day = covert_date(date)
+    hour, min = covert_time(time)
     
     if checkFormat_date(year, month, day) and checkFormat_time(hour, min):
         dateTime = datetime.datetime(int(year), int(month), int(day), int(hour), int(min))
-        new_schedule = [dateTime, scheduleCont]
-        mesType = REGIST_SCHEDULE
+        new_schedule = Schedule(dateTime, scheduleCont)
+        new_cmd = Command("regist_schedule", new_schedule)
     else:
-        mesType = ERROR
-        new_schedule = ""
+        new_cmd = Command("error", "")
 
-    return mesType, new_schedule
+    return new_cmd
 
 
 #形式チェックはしない
-def transf_delete(schedule_str):
+def covertf_delete(schedule_str):
     new_schedule_strs = split_schedule(schedule_str)
     if len(new_schedule_strs) == 1:
-        new_schedule = ""
-        mesType = CONFIRM_DELETE
+        new_cmd = Command("confirm_delete", "")
     else:
-        year, month, day = trans_date(new_schedule_strs[1])
+        year, month, day = covert_date(new_schedule_strs[1])
         if checkFormat_date(year, month, day):
             dateTime = datetime.date(int(year), int(month), int(day))
-            new_schedule = [dateTime, ""]
-            mesType =  CONFIRM_DELETE
+            new_schedule = Schedule(dateTime, "")
+            new_cmd = Command("confirm_delete", new_schedule)
         else:
-            new_schedule = ""
-            mesType =  ERROR
+            new_cmd = Command("error", "")
     #つづき
-    return mesType, new_schedule
+    return new_cmd
 
-def transf_dispSchedule(schedule_str):
+def covertf_dispSchedule(schedule_str):
     new_schedule_strs = split_schedule(schedule_str)
     if len(new_schedule_strs) == 1:
-        mesType = DISP_SCHEDULE
-        new_schedule = ""
+        new_cmd = Command("display_schedule", "")
     elif len(new_schedule_strs) == 2 \
         and (new_schedule_strs[1] == "全て" \
         or new_schedule_strs[1] == "すべて"):
-        mesType = DISP_SCHEDULE
-        new_schedule = "all"
+        new_cmd = Command("display_schedule", "all")
     else:
-        mesType = ERROR
-        new_schedule =""  
-
-    return mesType, new_schedule
+        new_cmd = Command("error", "")
+    return new_cmd
  
-def transf_execute(schedule_str):
-    mesType = EXEC_DELETE
-    new_schedule = ""
-    return mesType, new_schedule
+def covertf_execute(schedule_str):
+    new_cmd = Command("execute", "")
+    return new_cmd
 
-def transf_interrupt(schedule_str):
-    mesType = INTERRUPT
-    new_schedule = ""
-    return mesType, new_schedule
+def covertf_abort(schedule_str):
+    new_cmd = Command("abort", "")
+    return new_cmd
 
-def trans_func(mestype_tmp, schedule_str):
+def covert_func(mestype_tmp, schedule_str):
     func_dict = {
-    "disp_schedule" : transf_dispSchedule,
-    "regist_schedule_etc" : transf_registSchedule,
-    "execute" : transf_execute,
-    "delete" : transf_delete,
-    "inrerrupt" : transf_interrupt
+    "display_schedule_tmp" : covertf_dispSchedule,
+    "regist_schedule_etc" : covertf_registSchedule,
+    "execute_tmp" : covertf_execute,
+    "delete_tmp" : covertf_delete,
+    "abort_tmp" : covertf_abort
     }
 
     return func_dict[mestype_tmp](schedule_str)
@@ -275,14 +276,14 @@ def trans_func(mestype_tmp, schedule_str):
 #lookup
 def classify_mesType(schedule_str):
     #new_schedule_strs = split_schedule(schedule_str)
-    if schedule_str[:2] == "削除": #今の所すべて削除
-        mestype_tmp = "delete"
+    if schedule_str[:2] == "削除": 
+        mestype_tmp = "delete_tmp"
     elif schedule_str[:2] == "はい": 
-        mestype_tmp = "execute"
+        mestype_tmp = "execute_tmp"
     elif schedule_str[:3] == "いいえ": 
-        mestype_tmp = "inrerrupt"
+        mestype_tmp = "abort_tmp"
     elif schedule_str[:2] == "予定":
-        mestype_tmp = "disp_schedule"
+        mestype_tmp = "display_schedule_tmp"
     else:
         mestype_tmp = "regist_schedule_etc"
     
@@ -291,20 +292,23 @@ def classify_mesType(schedule_str):
 
 
 #main
-def trans(schedule_str):
+def covert(schedule_str):
     mestype_tmp = classify_mesType(schedule_str)
-    mesType, new_schedule = trans_func(mestype_tmp, schedule_str)
+    new_cmd = covert_func(mestype_tmp, schedule_str)
 
-    output = [mesType, new_schedule]
-    print("ind.{}".format(mesType))
+    #print("ind.{}".format(mesType))
 
-    return output
+    return new_cmd
 
 
 #デバッグ用
 if __name__=='__main__':
-    date_str="明日　テスト"
-    print(trans(date_str))
+    date_str="予定"
+    cmd = covert(date_str)
+    if type(cmd.content) == Schedule:
+        print(cmd.mesType, cmd.content.datetime, cmd.content.event)
+    elif type(cmd.content) == str:
+        print(cmd.mesType, cmd.content)
 
 
 
